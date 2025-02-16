@@ -14,7 +14,7 @@ void Application::Initialize(HINSTANCE _hInstance, int _iWidth, int _iHeight)
 	InitializeWindows(_hInstance, _iWidth, _iHeight);
 
 	GET_SINGLE(TimeManager)->Initialize();
-	GET_SINGLE(Graphics)->Initialize();
+	GET_SINGLE(Graphics)->Initialize(m_hHwnd, _iWidth, _iHeight);
 }
 
 void Application::Start()
@@ -47,13 +47,13 @@ void Application::Update()
 {
 	GET_SINGLE(TimeManager)->Update();
 	GET_SINGLE(Graphics)->Update(DELTA_TIME);
+	GET_SINGLE(Graphics)->Render(DELTA_TIME);
 }
 
 void Application::InitializeWindows(HINSTANCE _hInstance, int _iWidth, int _iHeight)
 {
 	wstring strName = _T("HmRenderer");
 
-	// Setup the windows class with default settings.
 	WNDCLASSEX wc;
 	wc.style = CS_HREDRAW | CS_VREDRAW;
 	wc.lpfnWndProc = WndProc;
@@ -68,12 +68,11 @@ void Application::InitializeWindows(HINSTANCE _hInstance, int _iWidth, int _iHei
 	wc.lpszClassName = strName.c_str();
 	wc.cbSize = sizeof(WNDCLASSEX);
 
-	// Register the window class.
 	RegisterClassEx(&wc);
 
 	Vec2 CenterPos;
-	CenterPos.x = (GetSystemMetrics(SM_CXSCREEN) - _iWidth) / 2;
-	CenterPos.y = (GetSystemMetrics(SM_CYSCREEN) - _iHeight) / 2;
+	CenterPos.x = (float)(GetSystemMetrics(SM_CXSCREEN) - _iWidth) / 2;
+	CenterPos.y = (float)(GetSystemMetrics(SM_CYSCREEN) - _iHeight) / 2;
 	
 
 	m_hHwnd = CreateWindowEx(
@@ -81,7 +80,7 @@ void Application::InitializeWindows(HINSTANCE _hInstance, int _iWidth, int _iHei
 		strName.c_str(),
 		strName.c_str(),
 		WS_OVERLAPPEDWINDOW,
-		CenterPos.x, CenterPos.y,
+		(int)CenterPos.x, (int)CenterPos.y,
 		_iWidth, 
 		_iHeight, 
 		NULL,

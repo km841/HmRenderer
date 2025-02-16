@@ -1,7 +1,4 @@
-﻿// HmRenderer.cpp : 애플리케이션에 대한 진입점을 정의합니다.
-//
-
-#include <windows.h>
+﻿#include <windows.h>
 #include "HmRenderer.h"
 #include "Application.h"
 
@@ -10,6 +7,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetBreakAlloc(54209);
+
 	Application* pApplication = new Application();
 
 	pApplication->Initialize(hInstance, 800, 600);

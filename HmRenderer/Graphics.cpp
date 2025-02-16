@@ -8,12 +8,18 @@ Graphics::Graphics()
 
 Graphics::~Graphics()
 {
+	if (m_pCore)
+	{
+		delete m_pCore;
+		m_pCore = nullptr;
+	}
 
 }
 
-void Graphics::Initialize()
+void Graphics::Initialize(HWND _hHwnd, int _iWidth, int _iHeight)
 {
-	m_pCore->Initialize();
+	m_pCore = new GraphicsCore;
+	m_pCore->Initialize(_hHwnd, _iWidth, _iHeight);
 }
 
 void Graphics::Update(float _fDeltaTime)
@@ -21,8 +27,7 @@ void Graphics::Update(float _fDeltaTime)
 	m_pCore->Update(_fDeltaTime);
 }
 
-void Graphics::Render()
+void Graphics::Render(float _fDeltaTime)
 {
-	m_pCore->RenderBegin();
-	m_pCore->RenderEnd();
+	m_pCore->Render(_fDeltaTime);
 }

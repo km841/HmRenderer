@@ -86,12 +86,11 @@ using std::make_unique;
 using std::wstring;
 using std::string;
 
+static void AssertEx(bool _bExpression, const std::wstring& _Message)
+{
+	if (_bExpression)
+		return;
 
-using std::shared_ptr;
-using std::make_shared;
-
-using std::unique_ptr;
-using std::make_unique;
-
-using std::wstring;
-using std::string;
+	MessageBoxW(NULL, _Message.c_str(), L"Assert", MB_OK);
+	assert(_bExpression);
+}
