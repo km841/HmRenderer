@@ -1,5 +1,8 @@
 #include "GraphicsCore.h"
 
+#define NEAR 0.1f
+#define FAR 1000.0f
+
 GraphicsCore::GraphicsCore()
 {
 }
@@ -13,6 +16,10 @@ void GraphicsCore::Initialize(HWND _hHwnd, int _iWidth, int _iHeight)
 	CreateSwapChainAndDeviceContext(_hHwnd, _iWidth, _iHeight);
 	CreateRTV();
 	CreateDSV(_iWidth, _iHeight);
+	CreateRasterizerState();
+	CreateBlendState();
+	CreateViewport(_iWidth, _iHeight);
+	CreateWVPMatrix(_iWidth, _iHeight, NEAR, FAR);
 }
 
 void GraphicsCore::Update(float _fDeltaTime)
@@ -98,6 +105,86 @@ void GraphicsCore::CreateDSV(int _iWidth, int _iHeight)
 	DepthStencilDesc.CPUAccessFlags = 0;
 	DepthStencilDesc.MiscFlags = 0;
 
-	m_pDevice->CreateTexture2D(&DepthStencilDesc, NULL, m_pDepthStencilBuffer.GetAddressOf());
-	m_pDevice->CreateDepthStencilView(m_pDepthStencilBuffer.Get(), NULL, m_pDepthStencilView.GetAddressOf());
+	HRESULT hResult;
+	hResult = m_pDevice->CreateTexture2D(&DepthStencilDesc, NULL, m_pDepthStencilBuffer.GetAddressOf());
+	AssertEx(SUCCEEDED(hResult), L"void GraphicsCore::CreateDSV(int _iWidth, int _iHeight) -> DepthTexture 생성 실패");
+
+	hResult = m_pDevice->CreateDepthStencilView(m_pDepthStencilBuffer.Get(), NULL, m_pDepthStencilView.GetAddressOf());
+	AssertEx(SUCCEEDED(hResult), L"void GraphicsCore::CreateDSV(int _iWidth, int _iHeight) -> DSV 생성 실패");
+}
+
+void GraphicsCore::CreateRasterizerState()
+{
+	HRESULT hResult;
+
+	D3D11_RASTERIZER_DESC RasterizerStateDesc;
+	ZeroMemory(&RasterizerStateDesc, sizeof(RasterizerStateDesc));
+	RasterizerStateDesc.FillMode = D3D11_FILL_SOLID;
+	RasterizerStateDesc.CullMode = D3D11_CULL_BACK;
+	RasterizerStateDesc.DepthClipEnable = true;
+	hResult = m_pDevice->CreateRasterizerState(&RasterizerStateDesc, &m_pBackFaceCull);
+	AssertEx(SUCCEEDED(hResult), L"void GraphicsCore::CreateRasterizerState() -> Backface Rasterizer 생성 실패");
+
+	ZeroMemory(&RasterizerStateDesc, sizeof(RasterizerStateDesc));
+	RasterizerStateDesc.FillMode = D3D11_FILL_SOLID;
+	RasterizerStateDesc.CullMode = D3D11_CULL_FRONT;
+	RasterizerStateDesc.DepthClipEnable = true;
+	hResult = m_pDevice->CreateRasterizerState(&RasterizerStateDesc, &m_pFrontFaceCull);
+	AssertEx(SUCCEEDED(hResult), L"void GraphicsCore::CreateRasterizerState() -> Frontface Rasterizer 생성 실패");
+}
+
+void GraphicsCore::CreateBlendState()
+{
+	D3D11_BLEND_DESC BlendStateDesc;
+	ZeroMemory(&BlendStateDesc, sizeof(D3D11_BLEND_DESC));
+
+	BlendStateDesc.RenderTarget[0].BlendEnable = TRUE;
+	BlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	BlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	BlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	BlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	BlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	BlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	BlendStateDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+
+	HRESULT hResult;
+	hResult = m_pDevice->CreateBlendState(&BlendStateDesc, &m_pAlphaState);
+	AssertEx(SUCCEEDED(hResult), L"void GraphicsCore::CreateBlendState() -> Alpha BlendState 생성 실패");
+	BlendStateDesc.RenderTarget[0].BlendEnable = FALSE;
+
+	hResult = m_pDevice->CreateBlendState(&BlendStateDesc, &m_pNoAlphaState);
+	AssertEx(SUCCEEDED(hResult), L"void GraphicsCore::CreateBlendState() -> No Alpha BlendState 생성 실패");
+}
+
+void GraphicsCore::CreateViewport(int _iWidth, int _iHeight)
+{
+	// Setup the (default) viewport
+	D3D11_VIEWPORT vp;
+	vp.Width = (FLOAT)_iWidth;
+	vp.Height = (FLOAT)_iHeight;
+	vp.MinDepth = 0.f;
+	vp.MaxDepth = 1.f;
+	vp.TopLeftX = 0;
+	vp.TopLeftY = 0;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	m_pContext->RSSetViewports(1, &vp);
+
+
+}
+
+void GraphicsCore::CreateWVPMatrix(int _iWidth, int _iHeight, float _fNear, float _fFar)
+{
+	float fFieldOfView = 3.141592654f / 4.0f;
+	float fScreenAspect = (float)_iWidth / (float)_iHeight;
+
+	// Create the projection matrix for 3D rendering.
+	DirectX::XMStoreFloat4x4(&m_ProjectionMatrix, DirectX::XMMatrixPerspectiveFovLH(fFieldOfView, fScreenAspect, _fNear, _fFar));
+
+	// Initialize the world matrix to the identity matrix.
+	DirectX::XMStoreFloat4x4(&m_WorldMatrix, DirectX::XMMatrixIdentity());
+
+	// Create an orthographic projection matrix for 2D rendering.
+	DirectX::XMStoreFloat4x4(&m_OrthoMatrix, DirectX::XMMatrixOrthographicLH((float)_iWidth, (float)_iHeight, _fNear, _fFar));
+
 }

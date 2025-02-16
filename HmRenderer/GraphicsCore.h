@@ -19,11 +19,15 @@ private:
 	void CreateSwapChainAndDeviceContext(HWND _hHwnd, int _iWidth, int _iHeight);
 	void CreateRTV();
 	void CreateDSV(int _iWidth, int _iHeight);
+	void CreateRasterizerState();
+	void CreateBlendState();
+	void CreateViewport(int _iWidth, int _iHeight);
+	void CreateWVPMatrix(int _iWidth, int _iHeight, float _fNear, float _fFar);
 
 private:
-	Matrix m_pProjectionMatrix;
-	Matrix m_pWorldMatrix;
-	Matrix m_pOrthoMatrix;
+	Matrix m_ProjectionMatrix;
+	Matrix m_WorldMatrix;
+	Matrix m_OrthoMatrix;
 
 private:
 	ComPtr<ID3D11Device> m_pDevice;
