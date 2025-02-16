@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 
+class Renderer;
 class GraphicsCore
 {
 public:
@@ -23,6 +24,9 @@ private:
 	void CreateBlendState();
 	void CreateViewport(int _iWidth, int _iHeight);
 	void CreateWVPMatrix(int _iWidth, int _iHeight, float _fNear, float _fFar);
+
+private:
+	Renderer* m_pRenderer;
 
 private:
 	Matrix m_ProjectionMatrix;

@@ -77,16 +77,16 @@ void GraphicsCore::CreateSwapChainAndDeviceContext(HWND _hHwnd, int _iWidth, int
 void GraphicsCore::CreateRTV()
 {
 	HRESULT hResult;
-	ID3D11Texture2D* backBufferPtr;
+	ID3D11Texture2D* pBackBufferPtr;
 
-	hResult = m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferPtr);
+	hResult = m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBufferPtr);
 	AssertEx(SUCCEEDED(hResult), L"void GraphicsCore::CreateRTV() -> SwapChain으로부터 BackBuffer 가져오기 실패!");
 
-	hResult = m_pDevice->CreateRenderTargetView(backBufferPtr, NULL, &m_pRenderTargetView);
+	hResult = m_pDevice->CreateRenderTargetView(pBackBufferPtr, NULL, &m_pRenderTargetView);
 	AssertEx(SUCCEEDED(hResult), L"void GraphicsCore::CreateRTV() -> BackBuffer를 이용하여 RTV 생성 실패!");
 
-	backBufferPtr->Release();
-	backBufferPtr = nullptr;
+	pBackBufferPtr->Release();
+	pBackBufferPtr = nullptr;
 }
 
 void GraphicsCore::CreateDSV(int _iWidth, int _iHeight)
@@ -169,8 +169,6 @@ void GraphicsCore::CreateViewport(int _iWidth, int _iHeight)
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	m_pContext->RSSetViewports(1, &vp);
-
-
 }
 
 void GraphicsCore::CreateWVPMatrix(int _iWidth, int _iHeight, float _fNear, float _fFar)

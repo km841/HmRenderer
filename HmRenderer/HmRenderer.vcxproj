@@ -140,6 +140,7 @@
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsCore.h" />
     <ClInclude Include="HmRenderer.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SimpleMath.h" />
     <ClInclude Include="TimeManager.h" />
@@ -149,6 +150,7 @@
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="GraphicsCore.cpp" />
     <ClCompile Include="HmRenderer.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="SimpleMath.cpp" />
     <ClCompile Include="TimeManager.cpp" />
   </ItemGroup>
