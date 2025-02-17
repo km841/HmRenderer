@@ -1,3 +1,9 @@
+## 2025년 02월 17일</br>
+### 18:16</br>
+- Ray-Marching을 이용한 Volume Rendering 구현</br>
+- 출처: https://graphicsrunner.blogspot.com/2009/01/volume-rendering-101.html</br>
+![skull](https://github.com/user-attachments/assets/ddae2f1c-c4e8-4d8f-b773-130e934a4c14)</br>
+
 ## 2025년 02월 15일</br>
 ### 22:43</br>
 - DirectX11 기반 렌더러 Framework 작성 중</br>
