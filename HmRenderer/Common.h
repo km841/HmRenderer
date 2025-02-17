@@ -94,3 +94,14 @@ static void AssertEx(bool _bExpression, const std::wstring& _Message)
 	MessageBoxW(NULL, _Message.c_str(), L"Assert", MB_OK);
 	assert(_bExpression);
 }
+
+struct MatrixBuffer
+{
+	DirectX::XMMATRIX WVP;
+};
+
+struct WindowSizeBuffer
+{
+	float fWindowSize[2];
+	float fDummy[2];
+};

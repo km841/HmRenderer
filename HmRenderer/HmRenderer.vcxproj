@@ -140,8 +140,11 @@
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsCore.h" />
     <ClInclude Include="HmRenderer.h" />
+    <ClInclude Include="ModelShader.h" />
+    <ClInclude Include="RaycastShader.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Shader.h" />
     <ClInclude Include="SimpleMath.h" />
     <ClInclude Include="TimeManager.h" />
   </ItemGroup>
@@ -150,7 +153,10 @@
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="GraphicsCore.cpp" />
     <ClCompile Include="HmRenderer.cpp" />
+    <ClCompile Include="ModelShader.cpp" />
+    <ClCompile Include="RaycastShader.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SimpleMath.cpp" />
     <ClCompile Include="TimeManager.cpp" />
   </ItemGroup>
@@ -163,6 +169,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Resources\Shader\model_position.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ModelPositionVS</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ModelPositionVS</EntryPointName>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\raycast.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">RayCastVS</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">RayCastVS</EntryPointName>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

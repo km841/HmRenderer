@@ -1,14 +1,21 @@
 #include "GraphicsCore.h"
+#include "Renderer.h"
 
-#define NEAR 0.1f
-#define FAR 1000.0f
+#define CAM_NEAR 0.1f
+#define CAM_FAR 1000.0f
 
 GraphicsCore::GraphicsCore()
+	: m_pRenderer(nullptr)
 {
 }
 
 GraphicsCore::~GraphicsCore()
 {
+	if (m_pRenderer)
+	{
+		delete m_pRenderer;
+		m_pRenderer = nullptr;
+	}
 }
 
 void GraphicsCore::Initialize(HWND _hHwnd, int _iWidth, int _iHeight)
@@ -19,22 +26,28 @@ void GraphicsCore::Initialize(HWND _hHwnd, int _iWidth, int _iHeight)
 	CreateRasterizerState();
 	CreateBlendState();
 	CreateViewport(_iWidth, _iHeight);
-	CreateWVPMatrix(_iWidth, _iHeight, NEAR, FAR);
+	CreateWVPMatrix(_iWidth, _iHeight, CAM_NEAR, CAM_FAR);
+
+	m_pRenderer = new Renderer;
+	m_pRenderer->SetOwner(this);
+	m_pRenderer->Initialize(_hHwnd, _iWidth, _iHeight);
 }
 
 void GraphicsCore::Update(float _fDeltaTime)
 {
+	m_pRenderer->Update(_fDeltaTime);
 }
 
 void GraphicsCore::Render(float _fDeltaTime)
 {
 	RenderBegin();
+	m_pRenderer->Render(_fDeltaTime);
 	RenderEnd();
 }
 
 void GraphicsCore::RenderBegin()
 {
-	float fClearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	float fClearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	m_pContext->ClearRenderTargetView(m_pRenderTargetView.Get(), fClearColor);
 	m_pContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 	m_pContext->OMSetRenderTargets(1, m_pRenderTargetView.GetAddressOf(), m_pDepthStencilView.Get());
@@ -176,13 +189,7 @@ void GraphicsCore::CreateWVPMatrix(int _iWidth, int _iHeight, float _fNear, floa
 	float fFieldOfView = 3.141592654f / 4.0f;
 	float fScreenAspect = (float)_iWidth / (float)_iHeight;
 
-	// Create the projection matrix for 3D rendering.
 	DirectX::XMStoreFloat4x4(&m_ProjectionMatrix, DirectX::XMMatrixPerspectiveFovLH(fFieldOfView, fScreenAspect, _fNear, _fFar));
-
-	// Initialize the world matrix to the identity matrix.
 	DirectX::XMStoreFloat4x4(&m_WorldMatrix, DirectX::XMMatrixIdentity());
-
-	// Create an orthographic projection matrix for 2D rendering.
 	DirectX::XMStoreFloat4x4(&m_OrthoMatrix, DirectX::XMMatrixOrthographicLH((float)_iWidth, (float)_iHeight, _fNear, _fFar));
-
 }

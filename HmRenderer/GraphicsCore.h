@@ -16,6 +16,13 @@ public:
 	void RenderBegin();
 	void RenderEnd();
 
+public:
+	ComPtr<ID3D11Device> GetDevice() { return m_pDevice; }
+	ComPtr<ID3D11DeviceContext> GetContext() { return m_pContext; }
+	ComPtr<ID3D11RasterizerState> GetBackFaceRS() { return m_pBackFaceCull; }
+	ComPtr<ID3D11RasterizerState> GetFrontFaceRS() { return m_pFrontFaceCull; }
+	ComPtr<ID3D11RenderTargetView> GetRTV() { return m_pRenderTargetView; }
+
 private:
 	void CreateSwapChainAndDeviceContext(HWND _hHwnd, int _iWidth, int _iHeight);
 	void CreateRTV();
