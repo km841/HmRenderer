@@ -3,6 +3,8 @@
 #include "ModelShader.h"
 #include "RaycastShader.h"
 #include "TimeManager.h"
+#include "Camera.h"
+
 #define DEVICE m_pOwner->GetDevice()
 #define CONETXT m_pOwner->GetContext()
 #define VOLUME_SIZE 256
@@ -28,10 +30,19 @@ Renderer::~Renderer()
 		delete m_pRaycastShader;
 		m_pRaycastShader = nullptr;
 	}
+
+	if (m_pCamera)
+	{
+		delete m_pCamera;
+		m_pCamera = nullptr;
+	}
 }
 
 void Renderer::Initialize(HWND _hHwnd, int _iWidth, int _iHeight)
 {
+	m_pCamera = new Camera;
+	m_pCamera->Initialize(_iWidth, _iHeight);
+
 	m_pModelShader = new ModelShader;
 	m_pModelShader->Initialize(DEVICE);
 
@@ -40,13 +51,14 @@ void Renderer::Initialize(HWND _hHwnd, int _iWidth, int _iHeight)
 
 	CreateRenderTexture(_iWidth, _iHeight);
 	CreateSampler();
-	LoadVolume(_T("../Resources/Model/skull.raw"));
+	LoadVolume(_T("../Resources/Model/foot.raw"));
 	CreateCube();
 	CreateViewProjMatrix();
 }
 
 void Renderer::Update(float _fDeltaTime)
 {
+	m_pCamera->Update(_fDeltaTime);
 	// rotate rendered volume around y-axis (oo so fancy :P)
 	m_fRotation += 1.2f * _fDeltaTime;
 	DirectX::XMStoreFloat4(&m_matRotation, DirectX::XMQuaternionRotationRollPitchYaw(0, m_fRotation, 0));
@@ -80,8 +92,10 @@ void Renderer::Render(float _fDeltaTime)
 
 	DirectX::XMMATRIX matWorldFinal = matWorld;
 
+
+	Matrix CamVP = m_pCamera->GetVP();
 	MatrixBuffer cb;
-	cb.WVP = XMMatrixMultiply(XMLoadFloat4x4(&m_ViewProj), matWorldFinal);
+	cb.WVP = XMMatrixMultiply(XMLoadFloat4x4(&CamVP), matWorldFinal);
 	CONETXT->UpdateSubresource(m_pModelShader->GetMatrixBuffer().Get(), 0, NULL, &cb, 0, 0);
 
 	//-----------------------------------------------------------------------------//

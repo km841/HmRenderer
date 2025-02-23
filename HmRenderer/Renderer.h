@@ -4,6 +4,7 @@
 class GraphicsCore;
 class ModelShader;
 class RaycastShader;
+class Camera;
 
 class Renderer
 {
@@ -25,10 +26,10 @@ private:
 	void CreateRenderTexture(int _iWidth, int _iHeight);
 	void LoadVolume(const wstring& _strFilename);
 	void CreateViewProjMatrix();
-	
 
 private:
 	GraphicsCore* m_pOwner;
+	Camera* m_pCamera;
 	ModelShader* m_pModelShader;
 	RaycastShader* m_pRaycastShader;
 

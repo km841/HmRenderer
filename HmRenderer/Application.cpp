@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "TimeManager.h"
+#include "InputManager.h"
 #include "Graphics.h"
 
 Application::Application()
@@ -14,6 +15,7 @@ void Application::Initialize(HINSTANCE _hInstance, int _iWidth, int _iHeight)
 	InitializeWindows(_hInstance, _iWidth, _iHeight);
 
 	GET_SINGLE(TimeManager)->Initialize();
+	GET_SINGLE(InputManager)->Initialize(m_hHwnd);
 	GET_SINGLE(Graphics)->Initialize(m_hHwnd, _iWidth, _iHeight);
 }
 
@@ -46,6 +48,7 @@ void Application::Start()
 void Application::Update()
 {
 	GET_SINGLE(TimeManager)->Update();
+	GET_SINGLE(InputManager)->Update();
 	GET_SINGLE(Graphics)->Update(DELTA_TIME);
 	GET_SINGLE(Graphics)->Render(DELTA_TIME);
 }

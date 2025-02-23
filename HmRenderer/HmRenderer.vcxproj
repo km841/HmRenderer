@@ -136,10 +136,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsCore.h" />
     <ClInclude Include="HmRenderer.h" />
+    <ClInclude Include="InputManager.h" />
     <ClInclude Include="ModelShader.h" />
     <ClInclude Include="RaycastShader.h" />
     <ClInclude Include="Renderer.h" />
@@ -150,9 +152,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="GraphicsCore.cpp" />
     <ClCompile Include="HmRenderer.cpp" />
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="ModelShader.cpp" />
     <ClCompile Include="RaycastShader.cpp" />
     <ClCompile Include="Renderer.cpp" />
