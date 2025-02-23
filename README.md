@@ -4,7 +4,7 @@
 - 카메라를 독립적인 개체로 월드 내에서 운용할 수 있도록 클래스로 구현하고 월드좌표를 부여</br>
 - 월드좌표를 부여함으로써 VP 행렬을 만들 때 자신의 월드좌표를 반영할 수 있도록 하여 결과적으로 카메라의 움직임이 반영되도록 구현했습니다.</br>
 - 카메라 이동 (W, S, A, D) 구현</br>
-![image](https://github.com/user-attachments/assets/6bcf2046-1662-4634-978b-ee780811b499)</br>
+![image](https://github.com/user-attachments/assets/cc08687f-f14c-411d-86e4-6a74f69b8d3c)</br>
 - 마우스 우클릭 상태에서 마우스 이동 시 이동량에 따라 회전하도록 구현</br>
 - 선형보간 (Lerp) 함수를 구현 및 적용하여 순간 많은 양을 움직이더라도 부드럽게 움직이도록 개선</br>
 ![bandicam2025-02-2321-03-14-980-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/a765ce94-48b8-44b3-92f9-82708a38e1db)</br>
