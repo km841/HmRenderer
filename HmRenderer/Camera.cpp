@@ -4,8 +4,8 @@
 
 Camera::Camera()
 	: m_fFov(XM_PI / 4.f)
-	, m_fNear(1.0f)
-	, m_fFar(10000.0f)
+	, m_fNear(0.1f)
+	, m_fFar(1000.0f)
 	, m_fAspectRatio(0.0f)
 	, m_fSpeed(10.0f)
 {
@@ -23,22 +23,22 @@ void Camera::Update(float _fDeltaTime)
 {
 	if (IS_PRESS(EKeyType::W))
 	{
-		m_Position += GetLook() * m_fSpeed * DELTA_TIME;
+		m_Position += GetLook() * m_fSpeed * _fDeltaTime;
 	}
 
 	if (IS_PRESS(EKeyType::S))
 	{
-		m_Position -= GetLook() * m_fSpeed * DELTA_TIME;
+		m_Position -= GetLook() * m_fSpeed * _fDeltaTime;
 	}
 
 	if (IS_PRESS(EKeyType::A))
 	{
-		m_Position -= GetRight() * m_fSpeed * DELTA_TIME;
+		m_Position -= GetRight() * m_fSpeed * _fDeltaTime;
 	}
 
 	if (IS_PRESS(EKeyType::D))
 	{
-		m_Position += GetRight() * m_fSpeed * DELTA_TIME;
+		m_Position += GetRight() * m_fSpeed * _fDeltaTime;
 	}
 
 	if (IS_PRESS(EKeyType::RBUTTON))
@@ -54,7 +54,7 @@ void Camera::Update(float _fDeltaTime)
 		float fTargetRotX = fRotateX * fSensitivity;
 		float fTargetRotY = fRotateY * fSensitivity;
 
-		float fSmoothFactor = 3.0f * DELTA_TIME;
+		float fSmoothFactor = 3.0f * _fDeltaTime;
 		m_Rotation.x = Lerp(m_Rotation.x, m_Rotation.x + fTargetRotX, fSmoothFactor);
 		m_Rotation.y = Lerp(m_Rotation.y, m_Rotation.y + fTargetRotY, fSmoothFactor);
 	}
@@ -76,6 +76,6 @@ void Camera::CreateVP()
 	m_matWorld = matScale * matRot * matTr;
 
 	m_matView = DirectX::XMMatrixTranspose(m_matWorld.Invert());
-	m_matPerspective = DirectX::XMMatrixTranspose(XMMatrixPerspectiveFovLH(m_fFov, 1.f, 0.1f, 1000.0f));
+	m_matPerspective = DirectX::XMMatrixTranspose(XMMatrixPerspectiveFovLH(m_fFov, m_fAspectRatio, m_fNear, m_fFar));
 	XMStoreFloat4x4(&m_matVP, XMMatrixMultiply(m_matPerspective, m_matView));
 }
