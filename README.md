@@ -1,3 +1,11 @@
+## 2025년 02월 25일</br>
+### 00:02</br>
+- Texture1D를 이용하여 LUT를 생성 후 살과 뼈 구분</br>
+- 픽셀 셰이더 내에서 볼륨 텍스쳐에서 샘플링한 밀도값을 LUT를 이용하여 다시 샘플링
+![image](https://github.com/user-attachments/assets/6357b1d1-ec58-4347-9e66-e6afe898f694)
+- G 키를 입력하여 뼈 부분만 렌더링 / H 키를 입력하여 살 부분만 렌더링
+![bandicam2025-02-2500-01-00-420-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/6c739257-0b79-4441-ad39-53a2ef469c98)
+
 ## 2025년 02월 23일</br>
 ### 21:08</br>
 - 키보드 및 마우스 입력을 담당하는 Input Manager 구현</br>
