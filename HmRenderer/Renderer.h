@@ -24,6 +24,7 @@ private:
 	void CreateCube();
 	void CreateSampler();
 	void CreateRenderTexture(int _iWidth, int _iHeight);
+	void CreateLUT(int _iWidth, int _iHeight);
 	void LoadVolume(const wstring& _strFilename);
 	void CreateViewProjMatrix();
 
@@ -44,6 +45,9 @@ private:
 	ComPtr<ID3D11Texture2D> m_pModelText2DBack;
 	ComPtr<ID3D11ShaderResourceView> m_pModelSRVBack;
 	ComPtr<ID3D11RenderTargetView> m_pModelRTVBack;
+
+	ComPtr<ID3D11Texture1D> m_pLUT;
+	ComPtr<ID3D11ShaderResourceView> m_pLUTSRV;
 
 	//sampler 
 	ComPtr <ID3D11SamplerState> m_pSamplerLinear;

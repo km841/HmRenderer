@@ -4,6 +4,7 @@
 #include "RaycastShader.h"
 #include "TimeManager.h"
 #include "Camera.h"
+#include "InputManager.h"
 
 #define DEVICE m_pOwner->GetDevice()
 #define CONETXT m_pOwner->GetContext()
@@ -50,6 +51,7 @@ void Renderer::Initialize(HWND _hHwnd, int _iWidth, int _iHeight)
 	m_pRaycastShader->Initialize(DEVICE, _iWidth, _iHeight);
 
 	CreateRenderTexture(_iWidth, _iHeight);
+	CreateLUT(_iWidth, _iHeight);
 	CreateSampler();
 	LoadVolume(_T("../Resources/Model/foot.raw"));
 	CreateCube();
@@ -62,6 +64,20 @@ void Renderer::Update(float _fDeltaTime)
 	// rotate rendered volume around y-axis (oo so fancy :P)
 	m_fRotation += 1.2f * _fDeltaTime;
 	DirectX::XMStoreFloat4(&m_matRotation, DirectX::XMQuaternionRotationRollPitchYaw(0, m_fRotation, 0));
+
+	if (IS_DOWN(EKeyType::G))
+	{
+		m_pRaycastShader->ShowBone(m_pRaycastShader->IsShowBone() ? false : true);
+		m_pRaycastShader->UpdateConstantBuffer(CONETXT);
+	}
+
+	if (IS_DOWN(EKeyType::H))
+	{
+		m_pRaycastShader->ShowCartilage(m_pRaycastShader->IsShowCartilage() ? false : true);
+		m_pRaycastShader->UpdateConstantBuffer(CONETXT);
+	}
+
+	
 }
 
 void Renderer::Render(float _fDeltaTime)
@@ -145,13 +161,14 @@ void Renderer::Render(float _fDeltaTime)
 	CONETXT->PSSetShaderResources(0, 1, m_pVolRSV.GetAddressOf()); // the loaded RAW file
 	CONETXT->PSSetShaderResources(1, 1, m_pModelSRVFront.GetAddressOf()); // the front facing RT 
 	CONETXT->PSSetShaderResources(2, 1, m_pModelSRVBack.GetAddressOf()); // the back facing RT
+	CONETXT->PSSetShaderResources(3, 1, m_pLUTSRV.GetAddressOf()); // the back facing RT
 
 	// Draw the cube
 	CONETXT->DrawIndexed(36, 0, 0);
 
 	// Un-bind textures
-	ID3D11ShaderResourceView* nullRV[3] = { NULL, NULL, NULL };
-	CONETXT->PSSetShaderResources(0, 3, nullRV);
+	ID3D11ShaderResourceView* nullRV[4] = { NULL, NULL, NULL, NULL };
+	CONETXT->PSSetShaderResources(0, 4, nullRV);
 }
 
 void Renderer::CreateCube()
@@ -262,6 +279,45 @@ void Renderer::CreateRenderTexture(int _iWidth, int _iHeight)
 	// Create render target view
 	hResult = DEVICE->CreateRenderTargetView(m_pModelText2DBack.Get(), NULL, &m_pModelRTVBack);
 	AssertEx(SUCCEEDED(hResult), _T("void Renderer::CreateRenderTexture(int _iWidth, int _iHeight) -> ModelBack SRV 생성 실패!"));
+}
+
+void Renderer::CreateLUT(int _iWidth, int _iHeight)
+{
+	D3D11_TEXTURE1D_DESC TexDesc = {};
+	TexDesc.Width = 256;  // 0~255 범위의 밀도 값
+	TexDesc.MipLevels = 1;
+	TexDesc.ArraySize = 1;
+	TexDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;  // RGBA 색상 저장
+	TexDesc.Usage = D3D11_USAGE_DEFAULT;
+	TexDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+	std::vector<uint8> vecTransFunc(256 * 4);
+
+	for (int i = 0; i < 256; ++i) 
+	{
+		float fNormDensity = i / 255.0f;
+		if (fNormDensity < 0.4f)
+		{  
+			vecTransFunc[i * 4 + 0] = 0;   
+			vecTransFunc[i * 4 + 1] = 0;   
+			vecTransFunc[i * 4 + 2] = 0;  
+			vecTransFunc[i * 4 + 3] = 0;   
+		}
+		else 
+		{
+			vecTransFunc[i * 4 + 0] = 255;
+			vecTransFunc[i * 4 + 1] = 255;
+			vecTransFunc[i * 4 + 2] = 255;
+			vecTransFunc[i * 4 + 3] = 255; 
+		}
+	}
+
+	D3D11_SUBRESOURCE_DATA InitDataDesc = { vecTransFunc.data(), 0, 0 };
+	HRESULT hResult = DEVICE->CreateTexture1D(&TexDesc, &InitDataDesc, &m_pLUT);
+	AssertEx(SUCCEEDED(hResult), _T("void Renderer::CreateLUT(int _iWidth, int _iHeight) -> LUT Texture 생성 실패!"));
+
+	hResult = DEVICE->CreateShaderResourceView(m_pLUT.Get(), NULL, &m_pLUTSRV);
+	AssertEx(SUCCEEDED(hResult), _T("void Renderer::CreateLUT(int _iWidth, int _iHeight) -> LUT SRV 생성 실패!"));
 }
 
 void Renderer::LoadVolume(const wstring& _strFilename)

@@ -3,6 +3,7 @@
 Texture3D<float> txVolume : register(t0);
 Texture2D<float4> txPositionFront : register(t1);
 Texture2D<float4> txPositionBack  : register(t2);
+Texture1D<float4> txTransfunc : register(t3);
 
 SamplerState samplerLinear : register(s0);
 
@@ -18,6 +19,8 @@ cbuffer cbEveryFrame : register(b0)
 cbuffer cbImmutable : register(b0)
 {
 	float2 g_fInvWindowSize;
+    int g_iIsOnlyBone;
+    int g_iIsOnlyCartilage;
 }
 
 struct VSInput
@@ -54,9 +57,20 @@ float4 RayCastPS(PSInput input) : SV_TARGET
 	for (uint i = 0; i < g_iMaxIterations; ++i)
 	{
 		float2 src = txVolume.Sample(samplerLinear, v).rr;
-		result += (1 - result.y)*src.y * src;
+        float4 tfColor = txTransfunc.Sample(samplerLinear, src.g);
+		
+        float2 transfunc = float2(0, 0);
+		
+        if (g_iIsOnlyBone == true)
+            transfunc = tfColor.aa;
+        else if (g_iIsOnlyCartilage == true)
+            transfunc = (float2(1.0, 1.0) - tfColor.aa);
+		else 
+            transfunc = float2(1.0, 1.0);
+		
+        result += (1.0 - result.y) * src.y * src * transfunc;
 		v += step;
 	}
  
-	return float4(result.r, result.r, result.r, result.y);
+    return float4(result.r, result.r, result.r, result.g);
 }

@@ -16,6 +16,15 @@ void RaycastShader::Initialize(ComPtr<ID3D11Device> _pDevice, int _iWidth, int _
 	CreateConstantBuffer(_pDevice, _iWidth, _iHeight);
 }
 
+void RaycastShader::UpdateConstantBuffer(ComPtr<ID3D11DeviceContext> _pContext)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedSubResource = {};
+	HRESULT hr = _pContext->Map(m_pWindowSizeBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
+	AssertEx(SUCCEEDED(hr), L"ConstantBuffer::PushData() - ConstantBuffer�� �����͸� ����ִ� �������� ���� �߻�");
+	memcpy(mappedSubResource.pData, &m_WindowData, sizeof(WindowSizeBuffer));
+	_pContext->Unmap(m_pWindowSizeBuffer.Get(), 0);
+}
+
 void RaycastShader::CreateVertexShader(ComPtr<ID3D11Device> _pDevice)
 {
 	HRESULT hResult;
@@ -55,19 +64,20 @@ void RaycastShader::CreatePixelShader(ComPtr<ID3D11Device> _pDevice)
 void RaycastShader::CreateConstantBuffer(ComPtr<ID3D11Device> _pDevice, int _iWidth, int _iHeight)
 {
 	HRESULT hResult;
-	WindowSizeBuffer WindowCB;
-	WindowCB.fWindowSize[0] = 1.f / _iWidth;
-	WindowCB.fWindowSize[1] = 1.f / _iHeight;
+	m_WindowData.fWindowSize[0] = 1.f / _iWidth;
+	m_WindowData.fWindowSize[1] = 1.f / _iHeight;
+	m_WindowData.iIsBone = false;
+	m_WindowData.iIsCartilage = false;
 
 	D3D11_BUFFER_DESC bd;
 	D3D11_SUBRESOURCE_DATA BufferInitData;
 	ZeroMemory(&bd, sizeof(bd));
 	ZeroMemory(&BufferInitData, sizeof(BufferInitData));
-	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.Usage = D3D11_USAGE_DYNAMIC;
 	bd.ByteWidth = sizeof(WindowSizeBuffer);
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-	BufferInitData.pSysMem = &WindowCB;
+	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	BufferInitData.pSysMem = &m_WindowData;
 	hResult = _pDevice->CreateBuffer(&bd, &BufferInitData, &m_pWindowSizeBuffer);
 	AssertEx(SUCCEEDED(hResult), L"void RaycastShader::CreateConstantBuffer(ComPtr<ID3D11Device> _pDevice, int _iWidth, int _iHeight) -> Constant Buffer 생성 실패!");
 }

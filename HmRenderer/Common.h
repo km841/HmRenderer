@@ -126,6 +126,7 @@ struct MatrixBuffer
 
 struct WindowSizeBuffer
 {
-	float fWindowSize[2];
-	float fDummy[2];
+	float fWindowSize[2] = {};
+	int iIsBone = 0;
+	int iIsCartilage = 0;
 };
