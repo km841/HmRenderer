@@ -21,6 +21,7 @@ public:
 	ComPtr<ID3D11DeviceContext> GetContext() { return m_pContext; }
 	ComPtr<ID3D11RasterizerState> GetBackFaceRS() { return m_pBackFaceCull; }
 	ComPtr<ID3D11RasterizerState> GetFrontFaceRS() { return m_pFrontFaceCull; }
+	ComPtr<ID3D11RasterizerState> GetNoneRS() { return m_pNoneCull; }
 	ComPtr<ID3D11RenderTargetView> GetRTV() { return m_pRenderTargetView; }
 
 private:
@@ -55,6 +56,8 @@ private:
 private:
 	ComPtr<ID3D11RasterizerState> m_pBackFaceCull;
 	ComPtr<ID3D11RasterizerState> m_pFrontFaceCull;
+	ComPtr<ID3D11RasterizerState> m_pNoneCull;
+
 	ComPtr<ID3D11BlendState> m_pAlphaState;
 	ComPtr<ID3D11BlendState> m_pNoAlphaState;
 	ComPtr<ID3D11RenderTargetView> m_pRenderTargetView;

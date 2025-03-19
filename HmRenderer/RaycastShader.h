@@ -18,10 +18,13 @@ public:
     bool IsShowBone() { return static_cast<bool>(m_WindowData.iIsBone); }
     bool IsShowCartilage() { return static_cast<bool>(m_WindowData.iIsCartilage); }
 
+    ComPtr<ID3D11ComputeShader> GetComputeShader() { return m_pComputeShader; }
+
 private:
     void CreateVertexShader(ComPtr<ID3D11Device> _pDevice);
     void CreateInputLayout(ComPtr<ID3D11Device> _pDevice);
     void CreatePixelShader(ComPtr<ID3D11Device> _pDevice);
+    void CreateComputeShader(ComPtr<ID3D11Device> _pDevice);
     void CreateConstantBuffer(ComPtr<ID3D11Device> _pDevice, int _iWidth, int _iHeight);
 
 private:
@@ -29,5 +32,8 @@ private:
     ComPtr<ID3D11Buffer> m_pWindowSizeBuffer;
     ComPtr<ID3DBlob> m_vsBlob;
     ComPtr<ID3DBlob> m_psBlob;
+    ComPtr<ID3DBlob> m_csBlob;
+
+    ComPtr<ID3D11ComputeShader> m_pComputeShader;
 };
 

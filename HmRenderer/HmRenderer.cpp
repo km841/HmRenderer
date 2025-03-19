@@ -1,4 +1,4 @@
-﻿#include <windows.h>
+﻿#include "Common.h"
 #include "HmRenderer.h"
 #include "Application.h"
 

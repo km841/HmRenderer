@@ -1,4 +1,6 @@
 #pragma once
+#define _USE_MATH_DEFINES
+#define NOMINMAX
 #include <windows.h>
 #include <tchar.h>
 #include <memory>
@@ -28,13 +30,15 @@
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include <DirectXColors.h>
-#include <DirectXTex/DirectXTex.h>
-#include <DirectXTex/DirectXTex.inl>
 #include <dwrite.h>
 #include <d2d1.h>
 #include <dshow.h>
+//#include "DirectXTex/DirectXTex.inl"
+//#include "DirectXTex/DirectXTex.h"
 
 #include "SimpleMath.h"
+#include "OpenMesh/Core/IO/MeshIO.hh"
+#include "OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi")
@@ -42,6 +46,8 @@
 #pragma comment(lib, "d3dcompiler")
 #pragma comment(lib, "d2d1")
 #pragma comment(lib, "dwrite")
+#pragma comment(lib, "OpenMesh/OpenMeshCored.lib")
+#pragma comment(lib, "OpenMesh/OpenMeshToolsd.lib")
 
 #define DECLARE_SINGLE(type)  \
 private:					  \
@@ -130,3 +136,25 @@ struct WindowSizeBuffer
 	int iIsBone = 0;
 	int iIsCartilage = 0;
 };
+
+static wstring s2ws(const string& s)
+{
+	int len;
+	int slength = static_cast<int>(s.length()) + 1;
+	len = ::MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0);
+	wchar_t* buf = new wchar_t[len];
+	::MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
+	wstring ret(buf);
+	delete[] buf;
+	return ret;
+}
+
+static string ws2s(const wstring& s)
+{
+	int len;
+	int slength = static_cast<int>(s.length()) + 1;
+	len = ::WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, 0, 0, 0, 0);
+	string r(len, '\0');
+	::WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, &r[0], len, 0, 0);
+	return r;
+}

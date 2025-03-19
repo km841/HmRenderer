@@ -1,0 +1,3 @@
+C:\HmRenderer\HmRenderer\Resources\Shader\compute_raycast.hlsl(28,12-65): warning X3206: implicit truncation of vector type
+C:\HmRenderer\HmRenderer\Resources\Shader\compute_raycast.hlsl(29,12-63): warning X3206: implicit truncation of vector type
+C:\HmRenderer\HmRenderer\Resources\Shader\compute_raycast.hlsl(28,24-65): error X4532: cannot map expression to cs_5_0 instruction set

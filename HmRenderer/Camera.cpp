@@ -13,7 +13,7 @@ Camera::Camera()
 
 void Camera::Initialize(int _iWidth, int _iHeight)
 {
-	m_fAspectRatio = _iWidth / _iHeight;
+	m_fAspectRatio = static_cast<float>(_iWidth / _iHeight);
 	m_Scale = Vec3(1.0f, 1.0f, 1.0f);
 	m_Rotation = Vec3(0.0f, 0.0f, 0.0f);
 	m_Position = Vec3(0.0f, 0.0f, -10.0f);

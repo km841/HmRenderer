@@ -13,6 +13,7 @@ void RaycastShader::Initialize(ComPtr<ID3D11Device> _pDevice, int _iWidth, int _
 	CreateVertexShader(_pDevice);
 	CreateInputLayout(_pDevice);
 	CreatePixelShader(_pDevice);
+	CreateComputeShader(_pDevice);
 	CreateConstantBuffer(_pDevice, _iWidth, _iHeight);
 }
 
@@ -59,6 +60,15 @@ void RaycastShader::CreatePixelShader(ComPtr<ID3D11Device> _pDevice)
 	hResult = CompileShaderFromFile(L"../Resources/Shader/raycast.hlsl", "RayCastPS", "ps_5_0", &m_psBlob);
 	hResult = _pDevice->CreatePixelShader(m_psBlob->GetBufferPointer(), m_psBlob->GetBufferSize(), nullptr, &m_pPixelShader);
 	AssertEx(SUCCEEDED(hResult), L"void RaycastShader::CreatePixelShader(ComPtr<ID3D11Device> _pDevice) -> Pixel Shader 생성 실패!");
+}
+
+void RaycastShader::CreateComputeShader(ComPtr<ID3D11Device> _pDevice)
+{
+	HRESULT hResult;
+	// Compile and create the compute shader
+	hResult = CompileShaderFromFile(L"../Resources/Shader/compute_raycast.hlsl", "RayMarchingCS", "cs_5_0", &m_csBlob);
+	hResult = _pDevice->CreateComputeShader(m_csBlob->GetBufferPointer(), m_csBlob->GetBufferSize(), nullptr, &m_pComputeShader);
+	AssertEx(SUCCEEDED(hResult), L"void RaycastShader::CreateComputeShader(ComPtr<ID3D11Device> _pDevice) -> Compute Shader 생성 실패!");
 }
 
 void RaycastShader::CreateConstantBuffer(ComPtr<ID3D11Device> _pDevice, int _iWidth, int _iHeight)

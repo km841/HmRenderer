@@ -144,6 +144,13 @@ void GraphicsCore::CreateRasterizerState()
 	RasterizerStateDesc.DepthClipEnable = true;
 	hResult = m_pDevice->CreateRasterizerState(&RasterizerStateDesc, &m_pFrontFaceCull);
 	AssertEx(SUCCEEDED(hResult), L"void GraphicsCore::CreateRasterizerState() -> Frontface Rasterizer 생성 실패");
+
+	ZeroMemory(&RasterizerStateDesc, sizeof(RasterizerStateDesc));
+	RasterizerStateDesc.FillMode = D3D11_FILL_WIREFRAME;
+	RasterizerStateDesc.CullMode = D3D11_CULL_NONE;
+	RasterizerStateDesc.DepthClipEnable = true;
+	hResult = m_pDevice->CreateRasterizerState(&RasterizerStateDesc, &m_pNoneCull);
+	AssertEx(SUCCEEDED(hResult), L"void GraphicsCore::CreateRasterizerState() -> None Rasterizer 생성 실패");
 }
 
 void GraphicsCore::CreateBlendState()

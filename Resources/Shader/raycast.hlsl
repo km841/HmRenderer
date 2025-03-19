@@ -9,7 +9,7 @@ SamplerState samplerLinear : register(s0);
 
 static const uint g_iMaxIterations = 128;
 
-static const float g_fStepSize = sqrt(3.f)/g_iMaxIterations;
+static const float g_fStepSize = sqrt(3.0f) / g_iMaxIterations;
 
 cbuffer cbEveryFrame : register(b0)
 {
@@ -56,19 +56,19 @@ float4 RayCastPS(PSInput input) : SV_TARGET
  
 	for (uint i = 0; i < g_iMaxIterations; ++i)
 	{
-		float2 src = txVolume.Sample(samplerLinear, v).rr;
-        float4 tfColor = txTransfunc.Sample(samplerLinear, src.g);
+		float src = txVolume.Sample(samplerLinear, v);
+        float4 tfColor = txTransfunc.Sample(samplerLinear, src);
 		
         float2 transfunc = float2(0, 0);
 		
-        if (g_iIsOnlyBone == true)
+        if (g_iIsOnlyBone)
             transfunc = tfColor.aa;
-        else if (g_iIsOnlyCartilage == true)
+        else if (g_iIsOnlyCartilage)
             transfunc = (float2(1.0, 1.0) - tfColor.aa);
 		else 
             transfunc = float2(1.0, 1.0);
 		
-        result += (1.0 - result.y) * src.y * src * transfunc;
+        result += (1.0 - result.y) * src * src * transfunc;
 		v += step;
 	}
  
