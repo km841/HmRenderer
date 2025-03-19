@@ -1,3 +1,11 @@
+## 2025년 03월 19일</br>
+### 23:22</br>
+- OpenMesh 라이브러리를 활용하여 STL 파일 로드 및 렌더링</br>
+- 그래픽스 디버깅 시 각 점의 위치가 원점에서 멀어져 있어서 제어하기 어려운 부분이 존재하여 정규화를 통해 원점으로 이동</br>
+- 흰색으로만 색상을 표현하도록 셰이더 작성하였고, 추후 uv 매핑 후 텍스쳐를 입히는 등 추가 작업 진행 예정</br>
+![정규화](https://github.com/user-attachments/assets/aaa15b1b-9570-4daf-aaeb-604f6704d3d2)</br>
+![bandicam2025-03-1923-26-29-251-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/3fad5b63-d8de-436c-96e8-262ccf164027)</br>
+
 ## 2025년 02월 25일</br>
 ### 00:02</br>
 - Texture1D를 이용하여 LUT를 생성 후 연조직과 뼈 구분</br>
